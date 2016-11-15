@@ -1,1 +1,1 @@
-# JavaScript
+用于JavaScript的学习
