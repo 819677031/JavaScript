@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<script type="text/javascript">
+	window.onload = function (){
+		var oBtn = document.getElementsByTagName('input');
+
+		for (var i = 0; i < oBtn.length; i++) {
+			oBtn[i].onclick = function (){
+				for (var i = 0; i < oBtn.length; i++) {
+					oBtn[i].style.background = 'blue';
+				}
+			}
+		}
+	};
+	</script>
+</head>
+<body>
+	<input type="button" name="" value="btn1">
+	<input type="button" name="" value="btn2">
+	<input type="button" name="" value="btn3">
+</body>
+</html>
