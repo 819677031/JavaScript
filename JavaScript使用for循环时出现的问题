@@ -1,0 +1,48 @@
+这个问题的讨论最初来自公司内部邮件，我只是把这个问题的讨论内容记录下来。
+
+有一些项目组在定位问题的时候发现，在使用“for(x in array)”这样的写法的时候，在IE浏览器下，x出现了非预期的值。
+
+具体说，如果自定义了Array.prototype.indexOf方法（譬如源于某prototype污染），也许是因为老版本IE浏览器并不支持array.indexOf方法，而开发者又很想用，那么这样的浏览器可能会出现这样的问题：
+
+1
+2
+3
+Array.prototype.indexOf = function(){...};
+var arr = [1, 2];
+for (x in arr) console.log(x);
+//会输出
+
+1
+2
+function(){…}
+
+换句话说，把indexOf这个方法给输出出来了。
+
+解决方法很简单，要么别添加这个方法，要么用“for (i=0; i < array.length; i++)”这样的循环等等。
+
+但是问题的本质呢？有人猜测，可能是因为for(x in obj)这种用法其实是去遍历一个对象，而array的实现其实也和普通的object一致，只不过key是既定的数值而已：
+
+1
+{0:"something", 1:"something else"}
+在一则stackoverflow的问答里面也提到了，遍历数组的时候用for…in和for(;;)的区别，前者的含义是枚举对象的属性，存在这样两个问题：
+
+枚举的顺序无法被保证；
+继承属性也被枚举出来；
+在对Array.prototype.forEach的支持上，从这张表中也可以明确看到，IE8及以下版本是无法准确支持的：
+
+JavaScript使用for循环时出现的问题
+
+这里还有对forEach方法兼容性的详细阐述。事实上，主要的JavaScript框架（比如jQuery、Underscore和Prototype等等）都有安全和通用的for-each功能实现。
+
+在JSLint的for in章节里面也提到，for in语句允许循环遍历对象的属性名，但是也会遍历到那些通过原型链继承下来的属性，这在很多情况下都会造成预期以外的错误。有一种粗暴的解决办法：
+
+1
+for (name in object) { if (object.hasOwnProperty(name)) { .... } }
+还有人提到了使用for(var i=0;i<length;i++)类似这样的循环时的问题，因为JavaScript没有代码块级别的变量，所以这里的i的访问权限其实是所在的方法。有的书上会建议程序员把这样的变量声明放到一处去，但是从直观性上说，在大部分情况下都不够合理。使用JavaScript 1.7中引入的“let”可以解决这个问题，使i成为真正的代码块级别的变量：
+
+1
+for(let i =0; i < a.length; i++)
+最后，在Google的JavaScript风格导引里面，也涉及到了这个约束：
+
+for-in loop：
+Only for iterating over keys in an object/map/hash
