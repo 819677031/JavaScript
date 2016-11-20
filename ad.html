@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style type="text/css">
+		body{background: url('img/content.jpg') no-repeat center 0; text-align:center;}
+		img{display:none;}
+	</style>
+	<script type="text/javascript">
+	window.onload = function (){
+		var ad = document.getElementById('ad');
+
+		setTimeout(function(){
+			ad.style.display = 'inline-block';
+			setTimeout(function(){
+				ad.style.display = 'none';
+			},3000);
+		},2000);
+	};
+	</script>
+</head>
+<body>
+	<img id="ad" src="ad.jpg">
+</body>
+</html>
